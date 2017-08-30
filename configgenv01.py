@@ -1,4 +1,5 @@
 import os, sys, time
+import re
 import mactools
 
 
@@ -66,7 +67,7 @@ def listtodict(*args):
     # print("Input file name --> ", srclistoflist)
 
     deslistoflist = []  # Empty list to store the mac address list from the source.
-    desdict = {} # Empty dictionary to dictonary
+
 
     listhead = srclistoflist.pop(0)   # store headings in the new list and remove the headings
 
@@ -74,15 +75,17 @@ def listtodict(*args):
 
     # print(listhead)
     # print(srclistoflist)
-    i = range(0,len(listhead))
+    rowheadrange = range(0,len(listhead))
 
     for listline in srclistoflist:
-        for listdata in listline:
-            # print(listline)
-            desdict[listhead]=listdat
-        # print(desdict)
+        desdict = {} # Empty dictionary to dictonary
+        for i in rowheadrange:
+            desdict[listhead[i]]=listline[i]
+            # print(listhead[i], listline[i])
+        # print("dictrprint: ", desdict)
+        deslistoflist.append(desdict)
 
-    print(desdict)
+    print(deslistoflist)
     """
     try:
         # gerr = load_datafile("README.md","-delcn")
@@ -100,42 +103,92 @@ def listtodict(*args):
     return deslistoflist
 # end listtodict()
 
-def main_run():
+def exectimer(runfun, *args):
+
     """ summary: this is the main function
 
     call this from the program
 
     """
+    timerresulsts = {}  # Empty dictonary to work t
+    debug = 'NO' # debug settings
+    timerresulsts['start'] = start = time.time()
+    startft = time.strftime("%d-%m-%y %H:%M:%S %p", time.localtime())
 
-    try:
-        # gerr = load_datafile("README.md","-delcn")
-        macadd = mactools.load_datafile(sys.argv[1],"-delcn")
-    except IndexError:
-        print("Index error at end: No argument provided")
+    macadd = runfun( *args )
+    timerresulsts['end'] = end = time.time()
+    timerresulsts['total'] = totaltime = end - start
+    # timerresulsts['start']=start
+
+    if debug == "YES":
+        print("Start time = ", startft)
+        print("end time = ", time.strftime("%d-%m-%y %H:%M:%S %p", time.localtime()))
+        print("Run time is ", start, end, totaltime)
     else:
-        print(macadd)
-        print("Vlan\tMac Address\tType\tPorts\tVendor Oui")
-        for macl in macadd:
-            # print(macl[1].replace(".", ""))  # remove the . in mac address abcd.abcd.abcd
-            # print("\t".join(macl), "\t", mac_oui_get(macl[1].replace(".", "")))
-            print("line: ", macl)
-        print("mac count is ", len(macadd))
+        debug = "NO"
+    return macadd, timerresulsts
+
+# end exectimer()
+
+def multireplace(string, replacements):
+    """
+    Given a string and a replacement map, it returns the replaced string.
+    :param str string: string to execute replacements on
+    :param dict replacements: replacement dictionary {value to find: value to replace}
+    :rtype: str
+
+    courtosy reference link: https://gist.github.com/bgusach/a967e0587d6e01e889fd1d776c5f3729
+    """
+    # Place longer ones first to keep shorter substrings from matching where the longer ones should take place
+    # For instance given the replacements {'ab': 'AB', 'abc': 'ABC'} against the string 'hey abc', it should produce
+    # 'hey ABC' and not 'hey ABc'
+    # print(string, replacements)
+
+    substrs = sorted(replacements, key=len, reverse=True)
+
+    # Create a big OR regex that matches any of the substrings to replace
+    regexp = re.compile('|'.join(map(re.escape, substrs)))
+
+    # For each match, look up the new string in the replacements
+    return regexp.sub(lambda match: replacements[match.group(0)], string)
+
+
+def main_run():
+    try:
+        funcexec, timers = exectimer(listtodict, a)
+    except NameError:
+        print("function name error: Function does not exist or name is wrong")
+    else:
+        print(funcexec, timers)
 # end main_run()
 
-start = time.time()
-startft = time.strftime("%d-%m-%y %H:%M:%S %p", time.localtime())
 
-#totaltime = timeit.timeit("main_run()",setup="main_run", number=1)
-#main_run()
-infilenam = sys.argv[1]
-print(infilenam)
-a = splitcsvlist(infilenam)
-print(infilenam,a)
-b = listtodict(a)
-print(b)
+# main_run()
+# print(len(sys.argv))
+if len(sys.argv) < 3:
+    print("Error: Insuffient arguments")
+    print("usage syntax: %s <configuration_template.file> <value_csv.file>" % sys.argv[0])
+else:
+    templatefilename = sys.argv[1]
+    csvfilename = sys.argv[2]
+    # print(templatefilename)
+    a = splitcsvlist(templatefilename)
+    # print(templatefilename,a)
+    b = listtodict(splitcsvlist(csvfilename))
+    # print(a)
+    # print(b)
 
-end = time.time()
-totaltime = end - start
-print("Start time = ", startft)
-print("end time = ", time.strftime("%d-%m-%y %H:%M:%S %p", time.localtime()))
-print("Run time is ", start, end, totaltime)
+    csvlength = len(b)
+    for val in range(0, csvlength):
+        # print(val,"=",b[val])
+        # for i in range(0, len(a)):
+        print("\n*** CSV line %d ***" % val)
+        print("<----------------------->\n")
+
+        for templateline in a:
+                # print(templateline[0])
+                out = multireplace(templateline[0], b[val])  # templateline is a 'list of list' hence index is used to extract the string
+                print(out)
+
+        print("\n!-----------------------!\n\n")
+        #print("\n*** CSV line %d - END ***" % val)
