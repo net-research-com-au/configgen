@@ -2,6 +2,7 @@
 
 #ignore data files (files containing source data)
 *.dat
+
 #ignore output files
 *.out
 
@@ -21,3 +22,5 @@ db.sqlite3
 ## test files
 !cisco-mac-table.dat
 !macnp_port.dat
+!*.csv
+!*.cfg

@@ -1,0 +1,2 @@
+appname,env,srvport,srvdesc,vpdcvip,vpdcpip,dc02vip,dco2pip
+AWTR,UAT,8443,Ariwatch TunRelay,172.21.11.21,172.21.12.21,172.22.11.21,172.22.12.21
