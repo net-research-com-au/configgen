@@ -2,9 +2,13 @@
 
 #ignore data files (files containing source data)
 *.dat
+*.tmp
 
 #ignore output files
 *.out
+
+#ignore output directories
+output
 
 #ignore django app files
 *.pyc

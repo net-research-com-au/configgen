@@ -1,0 +1,4 @@
+<<hostname>>,<<username>>,snmpcommunity
+DNNR01,joe,thisisgood
+DNNR02,blogs,maybesnmp
+DNNR03,smith,commgood
