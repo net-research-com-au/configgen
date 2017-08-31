@@ -1,4 +1,6 @@
-import os, sys, time
+import os
+import sys
+import time
 import re
 import mactools
 
@@ -7,10 +9,16 @@ def splitcsvlist(*args):
     """ Summary: loads csv data from file and then converts it to a list of lists.
 
     Description:
-    opens the file and read all the lines and stores it in a list
-    and returns below details in a list from the list of lists
-    [['vlan', 'mac address', 'type', 'switch port'],
-    ['vlan', 'mac address', 'type', 'switch port'],....]
+    opens the file and read all the lines and stores it in a list.
+    Returns csv rows in a list from the list of lists.
+    Example:
+    Input information: <input a file name>
+    col1, col2, col3, col4
+    col1, col2, col3, col4
+
+    Output inforation: <list of lists>
+    [['col1', 'col2', 'col3', 'col4'],
+    ['col1', 'col2', 'col3', 'col4'],....]
 
     Syntax: splitcsvlist("filename.ext")
 
@@ -26,33 +34,44 @@ def splitcsvlist(*args):
 
     # print("Input file name --> ", in_datafile)
 
-    maclist = []  # Empty list to store the mac address list from the source.
+    outcsvlist = []  # Empty list to store the mac address list from the source.
     try:
         # gerr = load_datafile("README.md","-delcn")
-        print(in_datafile)
+        # print(in_datafile)
         gerr = mactools.load_datafile(in_datafile, "-delcn")
     except IndexError:
         print("Index error at end")
     else:
         cnt = 0
+        # print("*** CSV List ***")
         for val in gerr:
-            # print(val)
-            maclist.append(val.split(','))
+            # print("line %d: " % cnt, val)
+            outcsvlist.append(val.split(','))
+            cnt = cnt + 1
+    return outcsvlist
+# end splitcsvlist()
 
-    return maclist
-# end csvsplitlist()
 
-
-def listtodict(*args):
-    """ Summary: loads list of list and then converts it to a list of dictionary.
+def csvlisttodict(*args):
+    """ Summary: loads csv list of lists and then converts it to a
+    list of dictionaries with first row as the keys and rest as values.
 
     Description:
-    opens the list of list and read all the lines and stores it in a list
-    of dictionary and returns below details in a list from the list of lists
-    [['vlan', 'mac address', 'type', 'switch port'],
-    ['vlan', 'mac address', 'type', 'switch port'],....]
+    opens the list of list and read all the rows and stores it in a list.
+    The first row is converted to the keys of the resultant dictionary.
+    The rest of the rows are added as list of key:value dictionary pairs.
+    The function retunrs list of dictionaries.
+    Example:
+    Input information: <input a file name>
+    [['Hcol1', 'Hcol2', 'Hcol3', 'Hcol4'],
+    ['col1', 'col2', 'col3', 'col4'],
+    ['col1', 'col2', 'col3', 'col4'],....]
 
-    Syntax: listofdict("filename.ext")
+    Output inforation: <list of lists>
+    [{'Hcol1': 'col1', 'Hcol2': 'col2', 'Hcol3': 'col3', 'Hcol4': 'col4'},
+    {'Hcol1': 'col1', 'Hcol2': 'col2', 'Hcol3': 'col3', 'Hcol4': 'col4'},....]
+
+    Syntax: csvlistodict([csv listoflists])
 
     """
     # Validation check if the filename was provided to function
@@ -67,7 +86,6 @@ def listtodict(*args):
     # print("Input file name --> ", srclistoflist)
 
     deslistoflist = []  # Empty list to store the mac address list from the source.
-
 
     listhead = srclistoflist.pop(0)   # store headings in the new list and remove the headings
 
@@ -85,33 +103,23 @@ def listtodict(*args):
         # print("dictrprint: ", desdict)
         deslistoflist.append(desdict)
 
-    print(deslistoflist)
-    """
-    try:
-        # gerr = load_datafile("README.md","-delcn")
-        # print(srclistoflist)
-
-        gerr = mactools.load_datafile(srclistoflist, "-delcn")
-    except IndexError:
-        print("Index error at end")
-    else:
-        cnt = 0
-        for val in gerr:
-            # print(val)
-            deslistoflist.append(val.split(','))
-            """
+    # print(deslistoflist)
     return deslistoflist
-# end listtodict()
+# end csvlisttodict()
 
 def exectimer(runfun, *args):
 
-    """ summary: this is the main function
+    """ summary: this is a timer fuction to show the execution time of program.
 
-    call this from the program
+    Call this function with the function name and arguments.
+    The output will be a disctionary of start, end and total time.
+
+    Syntax: exectimer(functionname, args)
+    output: {'start':'start time', 'end':'end time', 'total':'total time'}
 
     """
     timerresulsts = {}  # Empty dictonary to work t
-    debug = 'NO' # debug settings
+    debug = 'NO'  # debug settings
     timerresulsts['start'] = start = time.time()
     startft = time.strftime("%d-%m-%y %H:%M:%S %p", time.localtime())
 
@@ -131,13 +139,14 @@ def exectimer(runfun, *args):
 # end exectimer()
 
 def multireplace(string, replacements):
-    """
+    """ summary: replace multiple patterns in a single pass.
+
     Given a string and a replacement map, it returns the replaced string.
     :param str string: string to execute replacements on
-    :param dict replacements: replacement dictionary {value to find: value to replace}
+    :param dict replacements: replacement dictionary {'value to find': 'value to replace'}
     :rtype: str
 
-    courtosy reference link: https://gist.github.com/bgusach/a967e0587d6e01e889fd1d776c5f3729
+    courtosey reference link: https://gist.github.com/bgusach/a967e0587d6e01e889fd1d776c5f3729
     """
     # Place longer ones first to keep shorter substrings from matching where the longer ones should take place
     # For instance given the replacements {'ab': 'AB', 'abc': 'ABC'} against the string 'hey abc', it should produce
@@ -155,7 +164,7 @@ def multireplace(string, replacements):
 
 def main_run():
     try:
-        funcexec, timers = exectimer(listtodict, a)
+        funcexec, timers = exectimer(csvlisttodict, a)
     except NameError:
         print("function name error: Function does not exist or name is wrong")
     else:
@@ -174,7 +183,7 @@ else:
     # print(templatefilename)
     a = splitcsvlist(templatefilename)
     # print(templatefilename,a)
-    b = listtodict(splitcsvlist(csvfilename))
+    b = csvlisttodict(splitcsvlist(csvfilename))
     # print(a)
     # print(b)
 
@@ -191,4 +200,4 @@ else:
                 print(out)
 
         print("\n!-----------------------!\n\n")
-        #print("\n*** CSV line %d - END ***" % val)
+        # print("\n*** CSV line %d - END ***" % val)
