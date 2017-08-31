@@ -1,30 +1,8 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This program is generic coniguration generator for any device with command line configuration.
 
-### What is this repository for? ###
+usage syntax: configgenv01.py <configuration_template.file> <value_csv.file>
 
-* Quick summary
-This is config generator
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+Contact: Dheep@net-research.com.au
 
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
