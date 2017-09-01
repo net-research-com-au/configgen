@@ -24,11 +24,12 @@ Generic Example: Create a list of real server configuration for the Radware Aleo
         <value_csv.file>: testcsv.csv
 
 Cisco Example: Create a list cisco deivce configurations based on input template
+
     python configgenv01.py ciscotemplate.cfg cisco.csv
 
     Parameters:
-        <configuration_template.file>: testtemplate.cfg
-        <value_csv.file>: testcsv.csv
+        <configuration_template.file>: ciscotemplate.cfg
+        <value_csv.file>: cisco.csv
 
 
 ### Who do I talk to? ###
