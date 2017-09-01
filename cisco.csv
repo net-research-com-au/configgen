@@ -1,4 +1,4 @@
-<<hostname>>,<<username>>,snmpcommunity
-DNNR01,joe,thisisgood
-DNNR02,blogs,maybesnmp
-DNNR03,smith,commgood
+<<hostname>>,<<username>>,snmpcommunity,<<intnum>>
+RTRR01,joe,snmp01,fa0/1
+SWTR02,blogs,snmp02,fa0/4
+RMRR03,smith,SNMP033do,fa01

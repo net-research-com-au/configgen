@@ -1,30 +1,40 @@
 # README #
+Generic configuration generator
 
-This README would normally document whatever steps are necessary to get your application up and running.
+### Repository Details ###
 
-### What is this repository for? ###
+* Summary
+This program is generic configuration generator for any device with command line configuration.
 
-* Quick summary
-This is config generator
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* Version: 0.01
+* Usage
+    syntax: configgenv01.py <configuration_template.file> <value_csv.file>
 
-### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### EXAMPLE USAGE ###
 
-### Contribution guidelines ###
+Some example templates are included in this repository
 
-* Writing tests
-* Code review
-* Other guidelines
+Generic Example: Create a list of real server configuration for the Radware Aleon Loadbalancer
+
+    python configgenv01.py testtemplate.cfg testcsv.csv
+
+    Parameters:
+        <configuration_template.file>: testtemplate.cfg
+        <value_csv.file>: testcsv.csv
+
+Cisco Example: Create a list cisco deivce configurations based on input template
+    python configgenv01.py ciscotemplate.cfg cisco.csv
+
+    Parameters:
+        <configuration_template.file>: testtemplate.cfg
+        <value_csv.file>: testcsv.csv
+
 
 ### Who do I talk to? ###
 
 * Repo owner or admin
+    Contact: dheep@net-research.com.au
+
 * Other community or team contact
+    None
