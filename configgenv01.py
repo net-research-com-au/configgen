@@ -2,7 +2,65 @@ import os
 import sys
 import time
 import re
-import mactools
+# import mactools
+
+
+def load_datafile(*args):
+    """ Summary: loads data from file to a list.
+
+    Description:
+    opens the file and read all the lines and stores it in a list returns list
+    Syntax: load_datafile("filename.ext","Options")
+    Options:
+    -delcn --> removes new line character or carriage return
+    """
+    # Validation check if the filename was provided to function
+    # print("lenght of function args is =",len(args),args)
+
+    if len(args) <= 0:
+        return("No input file provided")
+
+    else:
+        in_datafile = args[0]
+
+    print("Input file name --> ", in_datafile)
+
+    # File validation
+    try:
+        out_linelist = open(in_datafile, "r")
+    except FileNotFoundError:
+        return in_datafile + " --> file not found"
+    except IOError:
+        return in_datafile + " --> unable to open file"
+
+    print("Importing lines from --> ", in_datafile)
+    out_linelist.seek(0)
+
+    var_out_rawlist = out_linelist.readlines()
+    out_linelist.close()
+
+    # create a dummy list for nomalised output
+    var_out_normlist = list(range(0, len(var_out_rawlist)))
+
+    # print(type(var_out_normlist))
+
+    try:
+        if args[1] == "-delcn":
+            print("Option: Remove new line/carriage return")
+            for i in range(0, len(var_out_rawlist)):
+                var_out_normlist[i] = var_out_rawlist[i].rstrip("\n|\r")
+
+            var_outlist = var_out_normlist
+
+    except IndexError:
+        print("No options provided")
+        var_outlist = var_out_rawlist
+
+    print("....*** DONE ***\nLine count = ", len(var_outlist), "\n\n")
+    # Return the mac address table list
+    return var_outlist
+
+# end load_datafile()
 
 
 def splitcsvlist(*args):
@@ -38,7 +96,7 @@ def splitcsvlist(*args):
     try:
         # gerr = load_datafile("README.md","-delcn")
         # print(in_datafile)
-        gerr = mactools.load_datafile(in_datafile, "-delcn")
+        gerr = load_datafile(in_datafile, "-delcn")
     except IndexError:
         print("Index error at end")
     else:
@@ -162,24 +220,24 @@ def multireplace(string, replacements):
     return regexp.sub(lambda match: replacements[match.group(0)], string)
 
 
-def main_run():
+def main_run_timer(*args):
     try:
-        funcexec, timers = exectimer(csvlisttodict, a)
+        funcexec, timers = exectimer(main_run, args)
     except NameError:
         print("function name error: Function does not exist or name is wrong")
     else:
         print(funcexec, timers)
-# end main_run()
+# end main_run_timer()
+
+def main_run(*args):
+    """ summary: main function to run this program.
 
 
-# main_run()
-# print(len(sys.argv))
-if len(sys.argv) < 3:
-    print("Error: Insuffient arguments")
-    print("usage syntax: %s <configuration_template.file> <value_csv.file>" % sys.argv[0])
-else:
-    templatefilename = sys.argv[1]
-    csvfilename = sys.argv[2]
+    """
+    inargs = args[0]
+    print(type(inargs))
+    templatefilename = inargs[1]
+    csvfilename = inargs[2]
     # print(templatefilename)
     a = splitcsvlist(templatefilename)
     # print(templatefilename,a)
@@ -191,7 +249,7 @@ else:
     for val in range(0, csvlength):
         # print(val,"=",b[val])
         # for i in range(0, len(a)):
-        print("\n*** CSV line %d ***" % val)
+        print("\n*** CSV line %d ***" % (val+1))
         print("<----------------------->\n")
 
         for templateline in a:
@@ -201,3 +259,15 @@ else:
 
         print("\n!-----------------------!\n\n")
         # print("\n*** CSV line %d - END ***" % val)
+#end main_run()
+
+
+# main_run()
+# print(len(sys.argv))
+if len(sys.argv) < 3:
+    print("Error: Insuffient arguments")
+    print("usage syntax: %s <configuration_template.file> <value_csv.file>" % sys.argv[0])
+else:
+    # print("main argv",type(sys.argv), sys.argv)
+    main_run(sys.argv)
+    # main_run_timer(sys.argv)
